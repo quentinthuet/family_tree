@@ -1,0 +1,144 @@
+R0 : Gerer des arbres généalogiques
+
+R1 : Comment "Gerer des arbres généalogiques"
+
+	Quitter <- Faux		Quitter : out Booléen
+	
+	Créer un arbre 		Arbre_Genealogique : in out T_Arbre_Genealogique
+
+	REPETER 	
+
+		Proposer à l'utilisateur différentes 	Quitter : out
+		options pour gérer un arbre 		Num_Action : out Entier
+		généalogique 				Arbre_Genealogique : in out
+		
+	JUSQU_A Quitter FIN_REPETER			Quitter : in
+
+R2 : Comment "Créer un arbre" ?
+
+	Demander à l'utilisateur de saisir les n différentes informations pour le registre
+	sur le noeud racine
+			
+	Initialiser (Arbre_Genealogique,                Arbre_Genealogique : in out   
+        Information_1, ..., Information_n)    		    	
+
+R2 : Comment "Proposer à l'utilisateur différentes options pour gérer un arbre généalogique"
+
+	Afficher les différentes actions
+
+	Demander à l'utilisateur de choisir une 	Num_Action : out
+	action	
+
+	SELON Num_Action FAIRE			 	Num_Action : in
+	
+		CAS 1  => Ajouter un parent
+		CAS 2  => Obtenir le nombre d'ancêtres d'un individu
+		CAS 3  => Obtenir les identifiants des ancêtres situés à une 
+                          génération donnée d'un individu
+		CAS 4  => Afficher l'arbre généalogique
+		CAS 5  => Supprimer un individu et ses ancêtres
+		CAS 6  => Obtenir les identifiants des individus dont on ne 
+                          connait qu'un parent
+		CAS 7  => Obtenir les identifiants des individus dont on connait 
+                          les deux parents
+		CAS 8  => Obtenir les identifiants des individus dont on ne 
+                          connait aucun parent
+		CAS 9  => Obtenir les identifiants des ancêtres d'un individu 
+                          sur un nombre donné de générations
+		CAS 10 => Quitter le programme
+
+	FIN_SELON
+
+R3 : Comment "Afficher les différentes actions" ?
+	
+	Afficher("
+		Menu principal
+			1.  Ajouter un parent
+			2.  Obtenir le nombre d'ancêtres d'un individu
+			3.  Obtenir les identifiants des ancêtres situés à une 
+                            génération donnée d'un individu
+			4.  Afficher l'arbre généalogique
+			5.  Supprimer un individu et ses ancêtres
+			6.  Obtenir les identifiants des individus dont on ne 
+                            connait qu'un parent
+			7.  Obtenir les identifiants des individus dont on 
+                            connait les deux parents
+			8.  Obtenir les identifiants des individus dont on ne 
+                            connait aucun parent
+			9.  Obtenir les identifiants des ancêtres d'un individu 
+                            sur un nombre donné de générations
+			10. Quitter le programme
+		")
+	
+R3 : Comment "Ajouter un parent" ?
+	
+	Demander à l'utilisateur de saisir 		Id_Ajouter : out Entier
+	l'identifiant de l'individu auquel ajouter un parent
+
+        Demander à l'utilisateur de saisir              Parent_Ajouter : out T_Parent
+        quel parent ajouter                 
+
+	Demander à l'utilisateur de saisir les 		Information_1, ..., Information_n : out
+	différentes informations pour le registre sur le nouveau noeud
+
+        Informations := (Information_1, ...,            Informations : out T_Information
+        Information_n)                                  Information_1, ..., Information_n : out
+
+	Ajouter (Arbre_Genealogique, Id_Ajouter, Parent_Ajouter, Informations)
+
+R3 : Comment "Obtenir le nombre d'ancêtres d'un individu" ?
+
+	Demander à l'utilisateur de saisir		Id_Ancetres : out Entier
+	l'identifiant de l'individu dont on veut connaitre le nombre d'ancêtres
+
+	Nombre_Ancetres (Arbre_Genealogique, Id_Ancetres)
+
+R3 : Comment "Obtenir les identifiants des ancêtres situés à une génération donnée" ? 
+
+	Demander à l'utilisateur de saisir		Id_Ancetres_Gen : out Entier
+	l'identifiant de l'individu dont on 		Num_Generation  : out Entier
+	veut connaitre les ancêtres et la génération à laquelle chercher les ancêtres
+
+	Ancetres_Generation (Arbre_Genealogique, Id_Ancetres_Gen, Num_Generation)
+
+R3 : Comment "Afficher l'arbre généalogique" ?
+	
+	Demander à l'utilisateur de saisir		Id_Afficher : out Entier
+	l'identifiant de l'individu à partir duquel afficher l'arbre
+
+	Afficher (Arbre_Genealogique, Id_Afficher)
+
+R3 : Comment "Supprimer un individu et ses ancêtres" ?
+
+	Demander à l'utilisateur de saisir		Id_Supprimer : out Entier
+	l'identifiant de l'individu à partir duquel supprimer l'arbre
+
+	Supprimer (Arbre_Genealogique, Id_Supprimer)
+
+R3 : Comment "Obtenir les identifiants des individus dont on ne connait qu'un parent" ?
+	
+	Mono_Parent (Arbre_Genealogique)
+
+R3 : Comment "Obtenir les identifiants des individus dont on connait les deux parents" ?
+	
+	Deux_Parents (Arbre_Genealogique)
+
+R3 : Comment "Obtenir les identifiants des individus dont on ne connait aucun parent" ?
+	
+	Sans_Parent (Arbre_Genealogique)
+
+R3 : Comment "Obtenir les identifiants des ancêtres d'un individu sur un nombre donné de générations" ?
+
+	Demander à l'utilisateur de saisir		Id_Ancetres_n_Gen : out Entier
+	l'identifiant de l'individu dont on		Num_Generations	  : out Entier
+	veut connaitre les ancêtres et le nombre de générations sur lesquelles chercher les ancêtres
+	
+	Ancetres_n_Generations (Arbre_Genealogique, Id_Ancetres_n_Gen, Num_Generations)
+	
+R3 : Comment "Quitter le programme" ?
+
+	Quitter <- Vrai				        Quitter : in Booléen
+
+
+
+

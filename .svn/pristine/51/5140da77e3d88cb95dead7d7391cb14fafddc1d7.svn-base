@@ -1,0 +1,48 @@
+-- Ce module définit un type arbre binaire T_AB et les opérations associées.
+
+generic
+    type T_Valeur is private;
+
+package Arbre_Binaire is
+
+    type T_AB is limited private;
+
+
+    -- Initialiser un arbre binaire
+    -- Paramètres :
+    --     Arbre : l'arbre à initialiser
+    procedure Initialiser (Arbre : out T_AB);
+
+
+    -- Détruire l'arbre
+    -- Paramètres :
+    --     Arbre : l'arbre à détruire
+    procedure Detruire (Arbre : in out T_AB);
+
+
+    -- Ajouter une valeur dans l'arbre à droite ou à gauche d'un noeud valeur
+    -- Paramètres :
+    --     Arbre : l'arbre dans lequel on veut ajouter la valeur
+    --     Valeur : donnée à ajouter
+    --     Noeud : Pointeur vers le noeud de l'arbre où ajouter la valeur
+    --     Direction : la direction dans laquelle ajouter la valeur
+    procedure Ajouter (Arbre : in out T_AB ;
+                       Valeur : in T_Valeur ;
+                       Noeud : in T_Noeud ;
+                       Direction : in T_Direction);
+
+private
+
+   type T_Noeud;
+   type T_AB is access T_Noeud;
+   type T_Noeud is
+      record
+         Valeur : T_Valeur;
+         Sous_Arbre_Gauche : T_ABR;
+         Sous_Arbre_Droit : T_ABR;
+      end record;
+
+   type T_Direction is (GAUCHE, DROITE);
+
+
+end Arbre_Binaire;

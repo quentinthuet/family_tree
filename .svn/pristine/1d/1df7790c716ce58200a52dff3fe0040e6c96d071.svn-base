@@ -1,0 +1,73 @@
+-- Ce module définit un type Registre T_R et les opérations associées.
+
+with Table_De_Hachage;
+
+generic
+    Capacite : Integer;
+package Registre is
+
+    type T_R is private;
+
+    -- Ajouter une nouvelle entrée au registre
+    -- Paramètres :
+    --     Registre : Le registre auquel ajouter la nouvelle entrée
+    --     Id : L'id de la nouvelle entrée
+    --     Informations : Les informations de la nouvelle entrée
+    -- Post :
+    --     La nouvelle entrée est cohérente avec le reste de l'arbre
+    procedure Enregistrer (Registre     : T_R,
+                           Id           : Integer,
+                           Informations : T_Informations);
+
+    -- Modifier une entrée du registre
+    -- Paramètres :
+    --     Registre : Le registre auquel modifier une entrée
+    --     Id : L'id de l'entrée à modifier
+    --     Informations : Les nouvelles informations de l'entrée à modifier
+    -- Post :
+    --     La nouvelle entrée est cohérente avec le reste de l'arbre
+    procedure Modifier (Registre     : T_R,
+                        Id           : Integer,
+                        Informations : T_Informations);
+
+private
+
+    type T_Sexe is (HOMME, FEMME);
+
+    type T_Date is
+       record
+           Jour  : int;
+           Mois  : int;
+           Annee : int;
+           -- Invariant
+           --    Jour entre 1 et 28, 29, 30 ou 31 suivant le mois et l'année
+           --    Mois entre 1 et 12
+           --    Annee inferieur a l'annee courante
+       end record;
+
+    type T_Informations is
+      record
+           Nom            : String;
+           Prenom         : String;
+           Sexe           : T_Sexe;
+           Date_Naissance : T_Date;
+           Lieu_Naissance : String;
+           Date_Deces     : T_Date;
+       end record;
+
+    function F_Hachage (Cle : Integer) return Integer is
+    begin
+        return (Cle % Capacite);
+    end F_Hachage;
+
+
+    package M_TH is new Table_De_Hachage (Integer,
+                                          T_Informations,
+                                          Capacite,
+                                          F_Hachage);
+      use M_TH;
+
+    type T_R is new T_TH;
+
+
+end Registre;

@@ -1,0 +1,18 @@
+project PROJET is
+
+   for Main use ("programme_principal.adb", "test_arbre_binaire.adb", "test_arbre_genealogique.adb", "test_liste_chainee_associative.adb", "test_table_de_hachage.adb");
+
+   package Builder is
+      for Default_Switches ("ada") use ("-s");
+   end Builder;
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-gnatwa", "-gnata", "-g");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use ("-E");
+   end Binder;
+
+end PROJET;
+

@@ -1,0 +1,87 @@
+-- Programme de test du module Liste_Chainee_Associative
+-- TODO :
+-- * Supprimer : Ajouter des cas moins triviaux (?)
+-- * Supprimer : Trouver un moyen de tester l'absence d'un élément (Fonction
+-- Est_Present dans ads ? Utilisation des exceptions ?)
+with Ada.Text_IO;       use Ada.Text_IO;
+with Liste_Chainee_Associative;
+
+
+procedure Test_Liste_Chainee_Associative is
+
+   package M_LCA is new Liste_Chainee_Associative (Integer, Character);
+   use M_LCA;
+
+   M_Cles : constant array (1..7) of Integer
+     := (4,8,1,2,7,14,6);
+
+   M_Donnees : constant array (1..7) of Character
+     := ('f','j','M','a','h','h','m');
+
+   M_Nouvelles_Donnees : constant array (1..7) of Character
+     := ('a','b','c','j','r','g','q');
+
+   procedure Tester_Initialiser_Vider is
+      LCA1 : T_LCA;
+   begin
+      Initialiser (LCA1);
+      pragma Assert (Taille (LCA1) = 0);
+      Vider (LCA1);
+   end;
+
+   procedure Tester_Enregistrer is
+      LCA1 : T_LCA;
+   begin
+      Initialiser (LCA1);
+      pragma Assert (Taille (LCA1) = 0);
+      for i in 1..7 loop
+         Enregistrer (LCA1, M_Cles(i), M_Donnees(i));
+         pragma Assert (Element (LCA1, M_Cles(i)) = M_Donnees(i));
+         pragma Assert (Taille (LCA1) = i);
+      end loop;
+      Vider (LCA1);
+   end Tester_Enregistrer;
+
+   procedure Tester_Supprimer is
+      LCA1 : T_LCA;
+   begin
+      Initialiser (LCA1);
+      pragma Assert (Taille (LCA1) = 0);
+      for i in 1..7 loop
+         Enregistrer (LCA1, M_Cles(i), M_Donnees(i));
+         pragma Assert (Element (LCA1, M_Cles(i)) = M_Donnees(i));
+         pragma Assert (Taille (LCA1) = i);
+      end loop;
+      for i in 1..7 loop
+         Supprimer (LCA1, M_Cles(i));
+         -- pragma Assert (Element (LCA1, M_Cles(i)) /= M_Donnees(i));
+         pragma Assert (Taille (LCA1) = 7 - i);
+      end loop;
+      Vider (LCA1);
+   end Tester_Supprimer;
+
+   procedure Tester_Modifier is
+      LCA1 : T_LCA;
+   begin
+      Initialiser (LCA1);
+      pragma Assert (Taille (LCA1) = 0);
+      for i in 1..7 loop
+         Enregistrer (LCA1, M_Cles(i), M_Donnees(i));
+         pragma Assert (Element (LCA1, M_Cles(i)) = M_Donnees(i));
+         pragma Assert (Taille (LCA1) = i);
+      end loop;
+      for i in 1..7 loop
+         Modifier (LCA1, M_Cles(i), M_Nouvelles_Donnees(i));
+         pragma Assert (Element (LCA1, M_Cles(i)) = M_Nouvelles_Donnees(i));
+         pragma Assert (Taille (LCA1) = 7);
+      end loop;
+      Vider (LCA1);
+   end Tester_Modifier;
+
+begin
+   Put_Line ("Test du module Liste_Chainee_Associative");
+   Tester_Initialiser_Vider;
+   Tester_Enregistrer;
+   Tester_Supprimer;
+   Tester_Modifier;
+end Test_Liste_Chainee_Associative;

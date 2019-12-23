@@ -1,0 +1,55 @@
+-- Programme de test du module Registre
+
+with Ada.Text_IO;       use Ada.Text_IO;
+with Registre;
+
+
+procedure Test_Registre is
+
+   M_R is new Registre (3);
+   use M_R;
+
+   M_Cles : constant array of Integer
+     := (1,2,3,4,5,6);
+
+   M_Informations : constant array of T_Informations
+     := (("aaa","zzz",HOMME,(01,01,1907),"AAA",(01,01,1983)),
+         ("bbb","yyy",FEMME,(01,01,1907),"BBB",(01,01,1983)),
+         ("ccc","xxx",HOMME,(01,01,1907),"CCC",(01,01,1983)),
+         ("ddd","www",FEMME,(01,01,1907),"DDD",(01,01,1983)),
+         ("eee","vvv",HOMME,(01,01,1907),"EEE",(01,01,1983)),
+         ("fff","uuu",FEMME,(01,01,1907),"FFF",(01,01,1983)));
+
+   M_Nouvelles_Informations : constant array of T_Informations
+     := (("ggg","ttt",HOMME,(01,01,1907),"GGG",(01,01,1983)),
+         ("hhh","sss",FEMME,(01,01,1907),"HHH",(01,01,1983)),
+         ("iii","rrr",HOMME,(01,01,1907),"III",(01,01,1983)),
+         ("jjj","qqq",FEMME,(01,01,1907),"JJJ",(01,01,1983)),
+         ("kkk","ppp",HOMME,(01,01,1907),"KKK",(01,01,1983)),
+         ("lll","ooo",FEMME,(01,01,1907),"LLL",(01,01,1983)));
+
+   M_Dates_Naissance_Fils : constant array of T_Date
+     := ((01,01,1907),(01,01,1907),(01,01,1907),
+         (01,01,1907),(01,01,1907),(01,01,1907));
+
+   procedure Tester_Enregistrer is
+      R1 : T_R;
+   begin
+      Initialiser (R1);
+
+      for i in 1..6 loop
+         Enregistrer (M_Informations (i)); -- Les informations 2 et 4 sont
+                                           -- incohérentes
+      end loop;
+      pragma Assert (Taille = 4);
+   end Tester_Enregistrer;
+
+   procedure Tester_Modifier is
+   begin
+      null;
+   end Tester_Modifier;
+
+
+begin
+    null;
+end Test_Registre;

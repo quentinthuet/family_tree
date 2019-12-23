@@ -1,0 +1,17 @@
+package Registre is
+
+    procedure Enregistrer (Registre     : T_R,
+                           Id           : Integer,
+                           Informations : T_Informations) is
+    begin
+        null;
+    end Enregistrer;
+
+    procedure Modifier (Registre     : T_R,
+                        Id           : Integer,
+                        Informations : T_Informations) is
+    begin
+        null;
+    end Enregistrer;
+
+end Registre;

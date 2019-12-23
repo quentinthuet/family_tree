@@ -1,0 +1,50 @@
+package body Registre is
+
+   function F_Hachage (Cle : in Integer) return Integer is
+   begin
+      return (Cle mod Capacite);
+   end;
+
+   procedure Initialiser (Registre : out T_R) is
+   begin
+      null;
+   end Initialiser;
+
+    procedure Enregistrer (Registre     : in out T_R;
+                           Id           : in Integer;
+                           Informations : in T_Informations;
+                           Date_Naissance_Fils : in     T_Date) is
+    begin
+        null;
+    end Enregistrer;
+
+    procedure Modifier (Registre     : in out T_R;
+                        Id           : in Integer;
+                        Informations : in T_Informations;
+                           Date_Naissance_Fils : in     T_Date) is
+    begin
+        null;
+    end Modifier;
+
+   procedure Supprimer (Registre : out T_R ; Cle : in Integer) is
+   begin
+      null;
+   end Supprimer;
+
+   function Element (Registre : out T_R ; Cle : in Integer) return T_Informations is
+      Resultat : T_Informations;
+   begin
+      return Resultat;
+   end Element;
+
+   function Taille (Registre : out T_R) return Integer is
+   begin
+      return -1;
+   end Taille;
+
+   procedure Vider (Registre : out T_R) is
+   begin
+      null;
+   end Vider;
+
+end Registre;

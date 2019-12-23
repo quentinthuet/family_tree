@@ -1,0 +1,287 @@
+-- Programme principal
+
+with Ada.Text_IO;              use Ada.Text_IO;
+with Ada.Text_IO.Unbounded_IO;
+with Ada.Integer_Text_IO;      use Ada.Integer_Text_IO;
+with Ada.Strings.Unbounded;    use Ada.Strings.Unbounded;
+with Ada.IO_Exceptions;
+with Arbre_Genealogique;
+with Registre;
+
+procedure Programme_Principal is
+
+    package M_AG is new Arbre_Genealogique(100);
+    use M_AG;
+    use M_AG.M_R;
+
+    procedure Saisir_Informations (Informations : in out T_Informations) is
+        Sexe, Decede : Character;
+    begin
+        Put      ("Nom                      : ");
+        Unbounded_IO.Get_Line (Informations.Nom);
+        Put      ("Prénom                   : ");
+        Unbounded_IO.Get_Line (Informations.Prenom);
+        loop
+            Put      ("Sexe (H/F)               : ");
+            Get (Sexe);
+            Skip_Line;
+            if Sexe = 'H' or Sexe = 'h' then
+                Informations.Sexe := HOMME;
+            elsif Sexe = 'F' or Sexe = 'f' then
+                Informations.Sexe := FEMME;
+            else
+                Put_Line ("Charactère saisi non valide, veuillez recommencer");
+            end if;
+            exit when Sexe = 'H' or Sexe = 'h' or Sexe = 'F' or Sexe = 'f';
+        end loop;
+        Put_Line ("Date de naissance ");
+        Put      ("     - Jour  (JJ)        : ");
+        Get (Informations.Date_Naissance.Jour);
+        Put      ("     - Mois  (MM)        : ");
+        Get (Informations.Date_Naissance.Mois);
+        Put      ("     - Annee (AAAA)      : ");
+        Get (Informations.Date_Naissance.Annee);
+        Put      ("Lieu de naissance        : ");
+        Unbounded_IO.Get_Line (Informations.Lieu_Naissance);
+        Skip_Line;
+        loop
+            Put      ("Personne décédée ? (O/N) : ");
+            Get (Decede);
+            Skip_Line;
+            if Decede = 'O' or Decede = 'o' then
+                Put_Line  ("Date de décès ");
+                Put      ("     - Jour  (JJ)        : ");
+                Get (Informations.Date_Deces.Jour);
+                Put      ("     - Mois  (MM)        : ");
+                Get (Informations.Date_Deces.Mois);
+                Put      ("     - Annee (AAAA)      : ");
+                Get (Informations.Date_Deces.Annee);
+            elsif Decede = 'N' or Decede = 'n' then
+                Informations.Date_Deces := (01,01,10000);
+            else
+                Put_Line ("Charactère saisi non valide, veuillez recommencer");
+            end if;
+            exit when Decede = 'O' or Decede = 'o' or Decede = 'N' or Decede = 'n';
+        end loop;
+    exception
+        when Ada.IO_Exceptions.Data_Error =>
+            Put_Line ("Saisie d'un caractère invalide, veuillez recommencer");
+            Skip_Line;
+            Saisir_Informations (Informations);
+    end Saisir_Informations;
+
+    procedure Saisir_Identifiant (Identifiant : in out Integer;
+                                  Arbre : in T_AG) is
+    begin
+        Put_Line ("Si vous souhaitez consulter l'arbre généalogique, tapez 0.");
+        Put ("Identifiant (ou 0 pour affichage) : ");
+        Get (Identifiant);
+        Skip_Line;
+        if Identifiant = 0 then
+            Afficher (Arbre);
+            Put ("Identifiant : ");
+            Get (Identifiant);
+            Skip_Line;
+        else
+            null;
+        end if;
+    exception
+        when Ada.IO_Exceptions.Data_Error =>
+            Put_Line ("Erreur, veuillez saisir un nombre entier");
+            Skip_Line;
+            Saisir_Identifiant (Identifiant, Arbre);
+    end Saisir_Identifiant;
+
+
+    Quitter,
+    Quitter_Boucle      : Boolean;
+    Num_Action,
+    Id_Ajouter,
+    Id_Ancetres,
+    Id_Ancetres_Gen,
+    Num_Generation,
+    Id_Afficher,
+    Id_Supprimer,
+    Id_Ancetres_n_Gen,
+    Num_Generations,
+    Taille_Retour       : Integer;
+    AG1                 : T_AG;
+    Parent_Ajouter      : T_Parent;
+    Informations        : T_Informations;
+begin
+    Quitter := False;
+
+    New_Line (4);
+    Put_Line ("Bienvenue dans le gestionnaire d'arbre généalogique");
+    Put_Line ("             Tom Pillot, Quentin Thuet             ");
+    New_Line (4);
+
+
+    -- Ajout du premier élément --
+    Put_Line ("Pour commencer, veuillez saisir les informations de");
+    Put_Line ("la première personne à ajouter à l'arbre.");
+    New_Line (2);
+    loop
+        Quitter_Boucle := False;
+        begin
+            Saisir_Informations (Informations);
+            Initialiser (AG1, Informations);
+            Quitter_Boucle := True;
+
+        end;
+        exit when Quitter_Boucle;
+    end loop;
+    -- Boucle principale
+    loop
+        begin
+            -- Affichage du menu principal
+            New_Line (4);
+            Put_Line("                    MENU PRINCIPAL                 ");
+            New_Line;
+            Put_Line ("  1.  Ajouter un parent");
+            Put_Line ("  2.  Obtenir le nombre d'ancêtres d'un individu");
+            Put_Line ("  3.  Obtenir les identifiants des ancêtres situés");
+            Put_Line ("      à une génération donnée d'un individu");
+            Put_Line ("  4.  Afficher l'arbre généalogique");
+            Put_Line ("  5.  Supprimer un individu et ses ancêtres");
+            Put_Line ("  6.  Obtenir les identifiants des individus dont");
+            Put_Line ("      on ne connait qu'un parent");
+            Put_Line ("  7.  Obtenir les identifiants des individus dont");
+            Put_Line ("      on connait les deux parents");
+            Put_Line ("  8.  Obtenir les identifiants des individus dont");
+            Put_Line ("      on ne connait aucun parent");
+            Put_Line ("  9.  Obtenir les identifiants des ancêtres d'un");
+            Put_Line ("      individu sur un nombre donné de générations");
+            Put_Line ("  10. Quitter le programme");
+            New_Line;
+            loop
+                Put_Line ("Veuillez saisir le nombre correspondant à l'action");
+                Put      ("désirée : ");
+                begin
+                    Get (Num_Action);
+                    Skip_Line;
+                    if Num_Action < 1 or Num_Action > 10 then
+                        Put_Line ("Action inexistante, veuillez recommencer");
+                    end if;
+                exception
+                    when Ada.IO_Exceptions.Data_Error =>
+                        Put_Line ("Erreur, veuillez saisir un nombre entier");
+                        Skip_Line;
+                end;
+                exit when Num_Action > 0 and Num_Action < 11;
+            end loop;
+            case Num_Action is
+
+                -- AJOUTER --
+            when 1 =>
+                New_Line (4);
+                Put_Line ("Veuillez saisir l'identifiant de la personne à qui");
+                Put_Line ("vous voulez ajouter un parent.");
+                Saisir_Identifiant (Id_Ajouter, AG1);
+                New_Line;
+                Saisir_Informations (Informations);
+                if Informations.Sexe = HOMME then
+                    Ajouter (AG1, Id_Ajouter, PERE, Informations);
+                else
+                    Ajouter (AG1, Id_Ajouter, MERE, Informations);
+                end if;
+
+                -- NOMBRE D'ANCETRES --
+            when 2 =>
+                New_Line (4);
+                Put_Line ("Veuillez saisir l'identifiant de la personne dont");
+                Put_Line ("vous voulez connaitre le nombre d'ancêtres");
+                Saisir_Identifiant (Id_Ancetres, AG1);
+                Taille_Retour := Taille (Ag1, Id_Ancetres);
+                New_Line;
+                Put      ("Cette personne a ");
+                Put      (Taille_Retour - 1, 0);
+                Put_Line (" ancêtres.");
+                New_Line (2);
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+
+                -- ANCETRES A UNE GENERATION DONEE --
+            when 3 =>
+                New_Line (4);
+                Put_Line ("Veuillez saisir l'identifiant de la personne dont");
+                Put_Line ("vous voulez connaitre les ancêtres");
+                Saisir_Identifiant (Id_Ancetres_Gen, AG1);
+                loop
+                    Put_Line ("Veuillez saisir la génération à laquelle vous");
+                    Put_Line ("voulez connaitre les ancêtres (sous la forme");
+                    Put      ("nombre entier positif) : ");
+                    Get (Num_Generation);
+                    Skip_Line;
+                    exit when Num_Generation > 0;
+                end loop;
+                New_Line;
+                Put_Line ("Les ancêtres de cette personne à la génération");
+                Put      ("donnée sont : ");
+                Afficher_Ancetres_Generation (AG1, Id_Ancetres_Gen, Num_Generation);
+                New_Line (2);
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+
+                -- AFFICHAGE --
+            when 4 =>
+                New_Line (4);
+                Put_Line ("Veuillez saisir l'identifiant à partir duquel");
+                Put      ("afficher l'arbre : ");
+                Saisir_Identifiant (Id_Afficher, AG1);
+                Afficher (AG1, Id_Afficher);
+                New_Line (2);
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+            when 5 => null;
+            when 6 => null;
+            when 7 => null;
+            when 8 => null;
+            when 9 => null;
+            when 10 =>
+                Quitter := True;
+            when others =>
+                null;
+            end case;
+
+        exception
+            when M_AG.ID_Absent_Exception =>
+                Put_Line ("L'identifiant saisi n'existe pas");
+                Put_Line ("Veuillez recommencer");
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+            when M_AG.M_R.Date_Naissance_Impossible_Exception =>
+                Put_Line ("La date de naissance saisie n'est pas valide");
+                Put_Line ("Veuillez recommencer");
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+            when M_AG.M_R.Date_Deces_Impossible_Exception =>
+                Put_Line ("La date de décès saisie n'est pas valide");
+                Put_Line ("Veuillez recommencer");
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+                Skip_Line;
+            when M_AG.M_R.Ordre_Date_Incoherent_Exception =>
+                Put_Line ("La date de décès saisie est antérieure à la date de");
+                Put_Line ("naissance");
+                Put_Line ("Veuillez recommencer");
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+            when M_AG.M_R.Date_Fils_Incoherente_Exception =>
+                Put_Line ("Les dates saisies sont incohérentes avec la date de");
+                Put_Line ("naissance de l'enfant depuis lequel il a été ajouté");
+                Put_Line ("Veuillez recommencer");
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+            when others =>
+                Put_Line ("Une erreur est survenue durant la saisie");
+                Put_Line ("Veuillez recommencer");
+                Put_Line ("Appuyez sur Entrée pour revenir au menu principal");
+                Skip_Line;
+                Skip_Line;
+        end;
+
+        exit when Quitter;
+    end loop;
+
+end Programme_Principal;

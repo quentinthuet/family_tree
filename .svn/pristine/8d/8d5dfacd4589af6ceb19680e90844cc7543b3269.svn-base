@@ -1,0 +1,45 @@
+-- Implantation du module Liste_Chainee_Associative.
+
+package body Liste_Chainee_Associative is
+
+   procedure Initialiser (Liste : out T_LCA) is
+   begin
+      null;
+   end Initialiser;
+
+   procedure Enregistrer (Liste : in out T_LCA ;
+                          Cle   : in T_Cle ;
+                          Donnee : in T_Donnee) is
+   begin
+      null;
+   end Enregistrer;
+
+   procedure Modifier (Liste : in out T_LCA ;
+                       Cle   : in T_Cle ;
+                       Donnee : in T_Donnee) is
+   begin
+      null;
+   end Modifier;
+
+   procedure Supprimer (Liste : in out T_LCA ; Cle : in T_Cle) is
+   begin
+      null;
+   end Supprimer;
+
+   function Element (Liste : in T_LCA ; Cle : in T_Cle) return T_Donnee is
+      Resultat : T_Donnee;
+   begin
+      return Resultat;
+   end Element;
+
+   function Taille (Liste : in T_LCA) return Integer is
+   begin
+      return -1;
+   end Taille;
+
+   procedure Vider (Liste : in out T_LCA) is
+   begin
+      null;
+   end Vider;
+
+end Liste_Chainee_Associative;

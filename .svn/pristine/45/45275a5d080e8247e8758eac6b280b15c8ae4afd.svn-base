@@ -1,0 +1,101 @@
+-- Programme de test du module Arbre_Binaire
+-- TODO :
+-- * Traiter les manips impossibles
+-- * Tester qu'on ne fait rien quand on veut ajouter à un
+-- emplacement déjà pris
+-- * Supprimer dans un ordre un peu aléatoire et faire les mêmes tests
+with Ada.Text_IO;       use Ada.Text_IO;
+with Arbre_Binaire;
+
+
+procedure Test_Arbre_Binaire is
+
+   package M_Arbre_Binaire is new Arbre_Binaire(Integer);
+   use M_Arbre_Binaire;
+
+   procedure Tester_Initialiser_Detruire is
+      AB1 : T_AB;
+   begin
+      Initialiser (AB1);
+      pragma Assert (Est_Vide (AB1));
+      pragma Assert (Taille (AB1) = 0);
+      Detruire (AB1);
+   end Tester_Initialiser_Detruire;
+
+   procedure Tester_Ajouter_Supprimer is
+      AB1 : T_AB;
+      type T_Tableau is array(1..5) of T_AB;
+      Liste_Noeuds : T_AB;
+   begin
+      Initialiser (AB1);
+
+      pragma Assert (Est_Vide (AB1));
+      pragma Assert (Taille (AB1) = 0);
+      pragma Assert (Valeur (Liste_Noeuds(1)) /= 1); -- marche pas car cas ou
+      pragma Assert (Valeur (Liste_Noeuds(2)) /= 2); -- noeud non initialisé
+      pragma Assert (Valeur (Liste_Noeuds(3)) /= 3); -- faire une fonction
+      pragma Assert (Valeur (Liste_Noeuds(4)) /= 4); -- Est_Egal qui compare
+      pragma Assert (Valeur (Liste_Noeuds(5)) /= 5); -- de manière controlée
+
+      Ajouter (1, AB1);
+      Liste_Noeuds(1) := AB1; -- PAS POSSIBLE
+
+      pragma Assert (not (Est_Vide (AB1)));
+      pragma Assert (Taille (AB1) = 1);
+      pragma Assert (Valeur (Liste_Noeuds(1)) = 1);
+      pragma Assert (Valeur (Liste_Noeuds(2)) /= 2);
+      pragma Assert (Valeur (Liste_Noeuds(3)) /= 3);
+      pragma Assert (Valeur (Liste_Noeuds(4)) /= 4);
+      pragma Assert (Valeur (Liste_Noeuds(5)) /= 5);
+
+      Ajouter (2, AB1, GAUCHE);
+      Liste_Noeuds(2) := Sous_Arbre_Gauche (AB1); -- PAS POSSIBLE
+
+      pragma Assert (not (Est_Vide (AB1)));
+      pragma Assert (Taille (AB1) = 5);
+      pragma Assert (Valeur (Liste_Noeuds(1)) = 1);
+      pragma Assert (Valeur (Liste_Noeuds(2)) = 2);
+      pragma Assert (Valeur (Liste_Noeuds(3)) /= 3);
+      pragma Assert (Valeur (Liste_Noeuds(4)) /= 4);
+      pragma Assert (Valeur (Liste_Noeuds(5)) /= 5);
+
+      Ajouter (3, AB1, DROITE);
+      Liste_Noeuds(3) := Sous_Arbre_Droite (AB1); -- PAS POSSIBLE
+
+      pragma Assert (not (Est_Vide (AB1)));
+      pragma Assert (Taille (AB1) = 5);
+      pragma Assert (Valeur (Liste_Noeuds(1)) = 1);
+      pragma Assert (Valeur (Liste_Noeuds(2)) = 2);
+      pragma Assert (Valeur (Liste_Noeuds(3)) = 3);
+      pragma Assert (Valeur (Liste_Noeuds(4)) /= 4);
+      pragma Assert (Valeur (Liste_Noeuds(5)) /= 5);
+
+      Ajouter (4, Liste_Noeuds (2), GAUCHE);
+      Liste_Noeuds(4) := Sous_Arbre_Gauche (Liste_Noeuds(2)); -- PAS POSSIBLE
+
+      pragma Assert (not (Est_Vide (AB1)));
+      pragma Assert (Taille (AB1) = 5);
+      pragma Assert (Valeur (Liste_Noeuds(1)) = 1);
+      pragma Assert (Valeur (Liste_Noeuds(2)) = 2);
+      pragma Assert (Valeur (Liste_Noeuds(3)) = 3);
+      pragma Assert (Valeur (Liste_Noeuds(4)) = 4);
+      pragma Assert (Valeur (Liste_Noeuds(5)) /= 5);
+
+      Ajouter (5, Liste_Noeuds (2), DROITE);
+      Liste_Noeuds(5) := Sous_Arbre_Droite (Liste_Noeuds(2)); -- PAS POSSIBLE
+
+      pragma Assert (not (Est_Vide (AB1)));
+      pragma Assert (Taille (AB1) = 5);
+      pragma Assert (Valeur (Liste_Noeuds(1) = 1));
+      pragma Assert (Valeur (Liste_Noeuds(2) = 2));
+      pragma Assert (Valeur (Liste_Noeuds(3) = 3));
+      pragma Assert (Valeur (Liste_Noeuds(4) = 4));
+      pragma Assert (Valeur (Liste_Noeuds(5) = 5));
+
+
+
+   end Tester_Ajouter_Supprimer;
+
+begin
+   Put_Line ("Test du module Arbre_Binaire");
+end Test_Arbre_Binaire;

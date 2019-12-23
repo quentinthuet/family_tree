@@ -1,0 +1,11 @@
+-- Programme principal
+
+with Ada.Text_IO;       use Ada.Text_IO;
+with Arbre_Genealogique;    use Arbre_Genealogique;
+
+
+procedure Programme_Principal is
+
+begin
+   null;
+end Programme_Principal;

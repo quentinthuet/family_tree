@@ -1,0 +1,129 @@
+-- Programme de test du module Arbre_Genealogique
+
+with Ada.Text_IO;       use Ada.Text_IO;
+with Ada.Integer_Text_IO;  use Ada.Integer_Text_IO;
+with Arbre_Genealogique;
+
+
+procedure Test_Arbre_Genealogique is
+
+    Capacite : constant Integer := 100;
+
+    package M_AG is new Arbre_Genealogique(Capacite);
+         use M_AG;
+
+M_Informations : constant array (1..8) of M_R.T_Informations
+     := (("aaa","zzz",M_R.HOMME,(01,01,1907),"AAA",(01,01,1983)),
+         ("ddd","www",M_R.FEMME,(01,01,1891),"DDD",(01,01,1983)),
+         ("fff","uuu",M_R.FEMME,(01,01,1907),"FFF",(01,01,1983)),
+         ("ggg","ttt",M_R.HOMME,(01,01,1907),"GGG",(01,01,1983)),
+         ("bbb","yyy",M_R.FEMME,(01,01,1907),"BBB",(01,01,1983)),
+         ("ccc","xxx",M_R.HOMME,(01,01,1984),"CCC",(01,01,1983)),
+         ("eee","vvv",M_R.HOMME,(31,06,1950),"EEE",(01,01,1983)),
+         ("hhh","sss",M_R.FEMME,(19,06,1908),"HHH",(29,02,1983)));
+
+M_Parents : constant array (1..7) of T_Parent
+            := (PERE, MERE, MERE, PERE, MERE, PERE, PERE);
+
+M_Id : constant array (1..7) of Integer := (1, 1, 2, 2, 3, 3, 4);
+
+    procedure Tester_Initialiser_Detruire is
+        Arbre : T_AG;
+    begin
+        Put_Line("Test initialiser détruire");
+        Initialiser(Arbre, M_Informations(1));
+        pragma Assert(M_AB.Taille(Arbre.AB) = 1);
+        pragma Assert(M_R.Taille(Arbre.Registre) = 1);
+        pragma Assert(M_TH.Taille(Arbre.Noeuds) = 1);
+        Detruire(Arbre);
+    end Tester_Initialiser_Detruire;
+
+
+    procedure Tester_AG is
+        Arbre : T_AG;
+    begin
+        Put_Line("Test Ajouter");
+        Put_Line("Ajout 1ère personne :");
+        Initialiser(Arbre, M_Informations(1));
+        pragma Assert(M_AB.Taille(Arbre.AB) = 1);
+        pragma Assert(M_R.Taille(Arbre.Registre) = 1);
+        pragma Assert(M_TH.Taille(Arbre.Noeuds) = 1);
+        Afficher(Arbre);
+        for i in 1..7 loop
+            Put("Ajout ");
+            Put(i);
+            Put_Line("ème personne :");
+            Ajouter(Arbre, M_Id(i), M_Parents(i), M_Informations(i+1));
+            pragma Assert(M_AB.Taille(Arbre.AB) = i+1);
+            pragma Assert(M_R.Taille(Arbre.Registre) = i+1);
+            pragma Assert(M_TH.Taille(Arbre.Noeuds) = i+1);
+            Afficher(Arbre);
+        end loop;
+
+        Put_Line("Test Modifier");
+        Put_Line("id 4 modifié :");
+        Modifier(Arbre, 4, M_Informations(1));
+        Afficher(Arbre);
+        Put_Line("id 6 modifié :");
+        Modifier(Arbre, 6, M_Informations(8));
+        Afficher(Arbre);
+        pragma Assert(M_AB.Taille(Arbre.AB) = 8);
+        pragma Assert(M_R.Taille(Arbre.Registre) = 8);
+        pragma Assert(M_TH.Taille(Arbre.Noeuds) = 8);
+
+        Put_Line("Test Afficher_Parents_Génération");
+        Put_Line("Affichage des ancêtres de 2ème génération de 1");
+        Afficher_Parents_Generation(Arbre, 1, 2);
+        Put_Line("Affichage des ancêtres de 1ère génération de 2");
+        Afficher_Parents_Generation(Arbre, 2, 1);
+
+        Put_Line("Test Mono_Parent");
+        Put_Line("Affichage des personnes n'ayant qu'un parent connu");
+        Mono_Parent(Arbre);
+
+        Put_Line("Test Deux_Parents");
+        Put_Line("Affichage des personnes ayant deux parents connus");
+        Deux_Parent(Arbre);
+
+        Put_Line("Test Sans_Parent");
+        Put_Line("Affichage des personnes n'ayant aucun parent connu");
+        Sans_Parent(Arbre);
+
+        Put_Line("Test Afficher_n_Generations");
+        Put_Line("Affichage de deux générations à partir de 1");
+        Afficher_n_Generations(Arbre, 1, 2);
+        Put_Line("Affichage d'une génération à partir de 4");
+        Afficher_n_Generations(Arbre, 4, 1);
+
+        Put_Line("Test Afficher_Homonymes");
+        Put_Line("Affichage des ancêtres homonymes de 3 et 4");
+        Afficher_Homonymes(Arbre, 3, 4);
+
+        Put_Line("Test Supprimer");
+        Put_Line("Suppression de id 3");
+        Supprimer(Arbre, 3);
+        Afficher(Arbre);
+        pragma Assert(M_AB.Taille(Arbre.AB) = 5);
+        pragma Assert(M_R.Taille(Arbre.Registre) = 5);
+        pragma Assert(M_TH.Taille(Arbre.Noeuds) = 5);
+        Put_Line("Suppression de id 4");
+        Supprimer(Arbre, 4);
+        Afficher(Arbre);
+        pragma Assert(M_AB.Taille(Arbre.AB) = 3);
+        pragma Assert(M_R.Taille(Arbre.Registre) = 3);
+        pragma Assert(M_TH.Taille(Arbre.Noeuds) = 3);
+
+        Put_Line("Detruire l'arbre");
+        Detruire(Arbre);
+
+    end Tester_AG;
+
+
+
+
+begin
+    Put_Line ("Test du module Arbre_Genealogique");
+    Tester_Initialiser_Detruire;
+    Tester_AG;
+    Put_Line("Tous les tests ont été passé avec succès !");
+end Test_Arbre_Genealogique;

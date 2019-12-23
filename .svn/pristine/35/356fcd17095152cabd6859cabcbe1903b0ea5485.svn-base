@@ -1,0 +1,76 @@
+-- Ce module définit un type arbre binaire T_AB et les opérations associées.
+
+generic
+    type T_Valeur is private;
+
+package Arbre_Binaire is
+
+    type T_AB is limited private;
+
+
+    -- Initialiser un arbre binaire
+    -- Paramètres :
+    --     Arbre : l'arbre à initialiser
+    procedure Initialiser (Arbre : out T_AB);
+
+
+    -- Détruire l'arbre
+    -- Paramètres :
+    --     Arbre : l'arbre à détruire
+    procedure Detruire (Arbre : in out T_AB);
+
+
+    -- Ajouter une valeur dans l'arbre à droite ou à gauche d'un noeud valeur
+    -- Paramètres :
+    --     Valeur : donnée à ajouter
+    --     Noeud : Pointeur vers le noeud de l'arbre où ajouter la valeur
+    --     Direction : la direction dans laquelle ajouter la valeur
+    procedure Ajouter (Valeur : in T_Valeur ;
+                       Noeud : in T_AB ;
+                       Direction : in T_Direction);
+
+
+    -- Supprimer un noeud et tous ses fils dans l'arbre
+    -- Paramètres :
+    --     Noeud : Pointeur vers le noeud que l'on veut supprimer
+    procedure Supprimer (Noeud : in out T_AB);
+
+
+
+    -- Afficher l'arbre en affichant chaque noeud avec la
+    -- procédure Afficher_Noeud
+    -- Paramètres :
+    --     Noeud : Pointeur vers le noeud à partir duquel on veut afficher
+    generic
+        with procedure Afficher_Noeud (Noeud : in T_AB);
+    procedure Afficher (Arbre : in T_AB);
+
+
+    -- Obtenir le nombre d'éléments sous un noeud
+    -- Paramètres :
+    --     Noeud : Pointeur vers le noeud choisi
+    function Taille (Noeud : in T_AB) return Integer;
+
+
+    -- Obtenir le nombre d'éléments sous un noeud à un niveau donné
+    -- Paramètres :
+    --     Noeud : Pointeur vers le noeud choisi
+    function Taille_Niveau (Noeud : in T_AB ; Niveau : in Integer)
+                            return Integer;
+
+
+private
+
+   type T_Noeud;
+   type T_AB is access T_Noeud;
+   type T_Noeud is
+      record
+         Valeur : T_Valeur;
+         Sous_Arbre_Gauche : T_AB;
+         Sous_Arbre_Droit : T_AB;
+      end record;
+
+   type T_Direction is (GAUCHE, DROITE);
+
+
+end Arbre_Binaire;

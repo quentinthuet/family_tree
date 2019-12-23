@@ -1,0 +1,90 @@
+-- Implantation du module arbre_genealogique
+
+package body Arbre_Genealogique is
+
+
+    procedure Initialiser (Arbre : out T_AG ; 
+                           Informations : in T_Informations) is
+    begin
+        null;
+    end Initialiser;
+
+
+    procedure Detruire (Arbre : in out T_AG) is
+    begin  
+        null;
+    end Detruire;
+
+
+    procedure Ajouter (Arbre : in out T_AG ;
+                       id : in Integer ;
+                       Parent : in T_Parent ;
+                       Informations : in T_Informations) is
+    begin
+        null;
+    end Ajouter;
+
+
+    procedure Modifier (Arbre : in out T_AG ;
+                       id : in Integer ;
+                       Informations : in T_Informations) is
+    begin
+        null;
+    end Modifier;
+
+
+    procedure Supprimer (Arbre : in T_AG ; id : in Integer) is
+    begin
+        null;
+    end Supprimer;
+
+
+    procedure Afficher (Arbre : in T_AG) is
+    begin   
+        null;
+    end;
+
+
+    procedure Afficher_Parents_Generation (Arbre : in T_AG ;
+                                           id : in Integer ;
+                                           gen : in Integer) is
+    begin
+        null;
+    end Afficher_Parents_Generation;
+
+
+    procedure Mono_Parent (Arbre : in T_AG) is
+    begin
+        null;
+    end Mono_Parent;
+
+
+    procedure Deux_Parent (Arbre : in T_AG) is
+    begin
+        null;
+    end Deux_Parent;
+
+
+    procedure Sans_Parent (Arbre : in T_AG) is
+    begin
+        null;
+    end Sans_Parent;
+
+
+    procedure Afficher_n_Generations (Arbre : in T_AG ; 
+                                      id : in Integer ;
+                                      gen : in Integer) is
+    begin
+        null;
+    end Afficher_n_Generations;
+
+
+    procedure Afficher_Homonymes (Arbre : in T_AG ; 
+                                  id_n : in Integer ;
+                                  id_m : in Integer) is
+    begin
+        null;
+    end Afficher_Homonymes;
+
+
+end Arbre_Genealogique;

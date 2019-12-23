@@ -1,0 +1,19 @@
+project Projet is
+
+   for Main use ("liste_chainee_associative.adb", "programme_principal.adb", "registre.adb", "table_de_hachage.adb", "test_arbre_binaire.adb", "test_arbre_genealogique.adb", "test_liste_chainee_associative.adb", "test_registre.adb", 
+      "test_table_de_hachage.adb");
+
+   package Compiler is
+      for Switches ("ada") use ("-g", "-O2");
+      for Switches ("ada") use ("-gnata", "-g", "-gnatwa");
+   end Compiler;
+
+   package Builder is
+   end Builder;
+
+   package Ide is
+      for Vcs_Kind use "subversion";
+   end Ide;
+
+end Projet;
+

@@ -1,0 +1,7 @@
+-- Ce module définit un type arbre généalogique T_AG et les opérations associées.
+
+package Arbre_Genealogique is
+
+   type T_AG is limited private;
+
+end Arbre_Genealogique;

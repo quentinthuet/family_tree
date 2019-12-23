@@ -1,0 +1,11 @@
+-- Programme de test du module Table_De_Hachage
+
+with Ada.Text_IO;       use Ada.Text_IO;
+with Table_De_Hachage;    use Table_De_Hachage;
+
+
+procedure Test_Table_De_Hachage is
+
+begin
+   Put_Line ("Test du module Table_De_Hachage");
+end Test_Table_De_Hachage;

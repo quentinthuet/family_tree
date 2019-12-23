@@ -1,0 +1,86 @@
+-- Ce module d√©finit un type Registre T_R et les op√©rations associ√©es.
+
+with Table_De_Hachage;
+
+generic
+    Capacite : Integer;
+package Registre is
+
+   Date_Naissance_Incoherente : exception;
+
+   type T_R is private;
+
+   type T_Sexe is (HOMME, FEMME);
+
+   type T_Date is
+      record
+         Jour  : int;
+         Mois  : int;
+         Annee : int;
+         -- Invariant
+         --    Jour entre 1 et 28, 29, 30 ou 31 suivant le mois et l'ann√©e
+         --    Mois entre 1 et 12
+         --    Annee inferieur a l'annee courante
+      end record;
+
+   type T_Informations is
+      record
+         Nom            : String;
+         Prenom         : String;
+         Sexe           : T_Sexe;
+         Date_Naissance : T_Date;
+         Lieu_Naissance : String;
+         Date_Deces     : T_Date;
+      end record;
+
+
+    -- Ajouter une nouvelle entr√©e au registre
+    -- Param√®tres :
+    --     Registre : Le registre auquel ajouter la nouvelle entr√©e
+    --     Id : L'id de la nouvelle entr√©e
+    --     Informations : Les informations de la nouvelle entr√©e
+    --     Date_Naissance_Fils : La date de naissance du fils de la nouvelle
+    --     entrÈe
+    -- Exception :
+    --     Date_Naissance_Incoherente : La date de naissance du fils est
+    --     antÈrieure ‡ celle de la nouvelle entrÈe ou postÈrieur ‡ sa date
+    --     de dÈcËs
+    procedure Enregistrer (Registre     : T_R,
+                           Id           : Integer,
+                           Informations : T_Informations,
+                           Date_Naissance_Fils : T_Date);
+
+    -- Modifier une entr√©e du registre
+    -- Param√®tres :
+    --     Registre : Le registre auquel modifier une entr√©e
+    --     Id : L'id de l'entr√©e √† modifier
+    --     Informations : Les nouvelles informations de l'entr√©e √† modifier
+    --     Date_Naissance_Fils : La date de naissance du fils de la nouvelle
+    --     entrÈe
+    -- Exception :
+    --     Date_Naissance_Incoherente : La date de naissance du fils est
+    --     antÈrieure ‡ celle de la nouvelle entrÈe ou postÈrieur ‡ sa date
+    --     de dÈcËs
+    procedure Modifier (Registre     : T_R,
+                        Id           : Integer,
+                        Informations : T_Informations,
+                        Date_Naissance_Fils : T_Date);
+
+private
+
+    function F_Hachage (Cle : Integer) return Integer is
+    begin
+        return (Cle % Capacite);
+    end F_Hachage;
+
+
+    package M_TH is new Table_De_Hachage (Integer,
+                                          T_Informations,
+                                          Capacite,
+                                          F_Hachage);
+      use M_TH;
+
+    type T_R is new T_TH;
+
+
+end Registre;

@@ -1,0 +1,128 @@
+-- Programme principal
+
+with Ada.Text_IO;       use Ada.Text_IO;
+with Ada.Text_IO.Unbounded_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Arbre_Genealogique;
+with Registre;
+
+procedure Programme_Principal is
+
+    package M_AG is new Arbre_Genealogique(100);
+    use M_AG;
+    use M_AG.M_R;
+
+    procedure Sauter_Lignes (Num_Lignes : in Integer) is
+    begin
+        for i in 1..Num_Lignes loop
+            New_Line;
+        end loop;
+    end Sauter_Lignes;
+
+    procedure Saisir_Informations (Informations : in out T_Informations) is
+        Sexe, Decede : Character;
+    begin
+        Put      ("Nom                      : ");
+        Unbounded_IO.Get_Line (Informations.Nom);
+        Put      ("Prénom                   : ");
+        Unbounded_IO.Get_Line (Informations.Prenom);
+        loop
+            Put      ("Sexe (H/F)               : ");
+            Get (Sexe);
+            Skip_Line;
+            if Sexe = 'H' or Sexe = 'h' then
+                Informations.Sexe := HOMME;
+            elsif Sexe = 'F' or Sexe = 'f' then
+                Informations.Sexe := FEMME;
+            else
+                Put_Line ("Charactère saisi non valide, veuillez recommencer");
+            end if;
+            exit when Sexe = 'H' or Sexe = 'h' or Sexe = 'F' or Sexe = 'f';
+        end loop;
+        Put_Line ("Date de naissance ");
+        Put      ("     - Jour              : ");
+        Get (Informations.Date_Naissance.Jour);
+        Put      ("     - Mois              : ");
+        Get (Informations.Date_Naissance.Mois);
+        Put      ("     - Annee             : ");
+        Get (Informations.Date_Naissance.Annee);
+        Put      ("Lieu de naissance        : ");
+        Unbounded_IO.Get_Line (Informations.Lieu_Naissance);
+        Skip_Line;
+        loop
+            Put      ("Personne décédée ? (O/N) : ");
+            Get (Decede);
+            Skip_Line;
+            if Decede = 'O' or Decede = 'o' then
+                Put_Line  ("Date de décès ");
+                Put       ("     - Jour              : ");
+                Get (Informations.Date_Deces.Jour);
+                Put       ("     - Mois              : ");
+                Get (Informations.Date_Deces.Mois);
+                Put       ("     - Annee             : ");
+                Get (Informations.Date_Deces.Annee);
+            elsif Decede = 'N' or Decede = 'n' then
+               Informations.Date_Deces := (01,01,10000);
+            else
+                Put_Line ("Charactère saisi non valide, veuillez recommencer");
+            end if;
+            exit when Decede = 'O' or Decede = 'o' or Decede = 'N' or Decede = 'n';
+        end loop;
+    exception
+            when others => null;
+    end Saisir_Informations;
+
+
+    Quitter,
+    Quitter_Boucle      : Boolean;
+    Num_Action,
+    Id_Ajouter,
+    Id_Ancetres,
+    Id_Ancetres_Gen,
+    Num_Generation,
+    Id_Afficher,
+    Id_Supprimer,
+    Id_Ancetres_n_Gen,
+    Num_Generations     : Integer;
+    AG1                 : T_AG;
+    Parent_Ajouter      : T_Parent;
+    Informations        : T_Informations;
+begin
+    Quitter := False;
+
+    Sauter_Lignes (4);
+    Put_Line ("Bienvenue dans le gestionnaire d'arbre généalogique");
+    Put_Line ("             Tom Pillot, Quentin Thuet             ");
+    Sauter_Lignes (4);
+
+
+    -- Ajout du premier élément --
+    Put_Line ("Pour commencer, veuillez saisir les informations de");
+    Put_Line ("la première personne à ajouter à l'arbre.");
+    Sauter_Lignes (2);
+    loop
+        Quitter_Boucle := False;
+        begin
+            Saisir_Informations (Informations);
+            Initialiser (AG1, Informations);
+            Quitter_Boucle := True;
+        exception
+            when M_AG.M_R.Date_Naissance_Impossible_Exception =>
+                Put_Line ("La date de naissance saisie n'est pas valide");
+                Put_Line ("Veuillez recommencer");
+            when M_AG.M_R.Date_Deces_Impossible_Exception =>
+                Put_Line ("La date de décès saisie n'est pas valide");
+                Put_Line ("Veuillez recommencer");
+            when M_AG.M_R.Ordre_Date_Incoherent_Exception =>
+                Put_Line ("La date de décès saisie est antérieure à la date de");
+                Put_Line ("naissance");
+                Put_Line ("Veuillez recommencer");
+            when others =>
+                Put_Line ("Une erreur est survenue durant la saisie");
+                Put_Line ("Veuillez recommencer");
+        end;
+        exit when Quitter_Boucle;
+    end loop;
+
+end Programme_Principal;

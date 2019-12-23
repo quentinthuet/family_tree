@@ -1,0 +1,10 @@
+-- Programme de test du module Registre
+
+with Ada.Text_IO;       use Ada.Text_IO;
+with Registre; use Registre;
+
+
+procedure Test_Liste_Chainee_Associative is
+begin
+    null;
+end;

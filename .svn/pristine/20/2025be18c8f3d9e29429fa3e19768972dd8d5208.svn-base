@@ -1,0 +1,18 @@
+-- Programme de test du module Arbre_Binaire
+-- TODO :
+-- * Traiter les manips impossibles
+-- * Tester qu'on ne fait rien quand on veut ajouter à un
+-- emplacement déjà pris
+-- * Supprimer dans un ordre un peu aléatoire et faire les mêmes tests
+with Ada.Text_IO;       use Ada.Text_IO;
+with Arbre_Binaire;
+
+
+procedure Appelle_Test_Arbre_Binaire is
+    package M_AB is new Arbre_Binaire (Integer);
+    use M_AB;
+    AB : T_AB;
+begin
+    Put_Line ("Test du module Arbre_Binaire");
+    Test_Arbre_Binaire;
+end Appelle_Test_Arbre_Binaire;

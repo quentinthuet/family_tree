@@ -1,0 +1,11 @@
+-- Programme de test du module Arbre_Genealogique
+
+with Ada.Text_IO;       use Ada.Text_IO;
+with Arbre_Genealogique;    use Arbre_Genealogique;
+
+
+procedure Test_Arbre_Genealogique is
+
+begin
+   Put_Line ("Test du module Arbre_Genealogique");
+end Test_Arbre_Genealogique;

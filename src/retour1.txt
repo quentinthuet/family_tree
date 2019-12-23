@@ -1,0 +1,15 @@
+Architecture :
+
+* Non donnée.
+
+
+Raffinages :
+
+* Avant de créer une personne, il faut regarder dans le registre si elle
+  existe.  Quand on ajoute un parent, on ne crée par forcément une nouvelle
+  personne.
+
+* Quand plusieurs identifiants sont attendus, pour les ancêtres par exemple,
+  comment sont-ils gérés ?
+
+

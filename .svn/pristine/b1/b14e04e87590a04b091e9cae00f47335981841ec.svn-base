@@ -1,0 +1,99 @@
+-- Ce module dEfinit un type Registre T_R et les opErations associées.
+
+with Table_De_Hachage;
+with Ada.Text_IO; use Ada.Text_IO;
+
+generic
+    Capacite : Integer;
+package Registre is
+
+   Date_Fils_Incoherente_Exception      : exception;
+   Ordre_Date_Incoherent_Exception      : exception;
+   Date_Naissance_Impossible_Exception  : exception;
+   Date_Deces_Impossible_Exception      : exception;
+   Cle_Absente_Exception                : exception;
+   Cle_Presente_Exception               : exception;
+
+   type T_Sexe is (HOMME, FEMME);
+
+   type T_Date is
+      record
+         Jour  : Integer;
+         Mois  : Integer;
+         Annee : Integer;
+         -- Invariant
+         --    Jour entre 1 et 28, 29, 30 ou 31 suivant le mois et l'annEe
+         --    Mois entre 1 et 12
+         --    Annee inferieur a l'annee courante
+      end record;
+
+   type T_Informations is
+      record
+         Nom            : String(1..3);
+         Prenom         : String(1..3);
+         Sexe           : T_Sexe;
+         Date_Naissance : T_Date;
+         Lieu_Naissance : String(1..3);
+         Date_Deces     : T_Date;
+      end record;
+
+
+   function F_Hachage (Cle : in Integer) return Integer;
+
+   package M_TH is new Table_De_Hachage (Integer,
+                                         T_Informations,
+                                         Capacite,
+                                         F_Hachage);
+    use M_TH;
+
+
+
+
+    -- Ajouter une nouvelle entrée au registre
+    -- Paramètres :
+    --     Registre : Le registre auquel ajouter la nouvelle entrée
+    --     Id : L'id de la nouvelle entrée
+    --     Informations : Les informations de la nouvelle entrée
+    --     Date_Naissance_Fils : La date de naissance du fils de la nouvelle
+    --     entréee
+    -- Exception :
+    --     Date_Fils_Incoherente_Exception : La date de naissance du fils est
+    --     antérieure à celle de la nouvelle entréee ou postérieur à sa date
+    --     de décès
+    --     Ordre_Date_Incoherent_Exception : La date de décès est antérieure à la date de
+    --     de naissance
+    --     Date_Naissance_Impossible_Exception : La date de naissance ne correspond pas
+    --     à une date réelle
+    --     Date_Deces_Impossible_Exception : La date de décès ne correspond pas à une date
+    --     réelle
+    --     Cle_Presente_Exception : L'id entrée est déjà présent
+    procedure Enregistrer (Registre            : in out T_TH;
+                           Id                  : in     Integer;
+                           Informations        : in     T_Informations;
+                           Date_Naissance_Fils : in     T_Date);
+
+    -- Modifier une entrée du registre
+    -- Paramètres :
+    --     Registre : Le registre auquel modifier une entrée
+    --     Id : L'id de l'entrée à modifier
+    --     Informations : Les nouvelles informations de l'entrée À modifier
+    --     Date_Naissance_Fils : La date de naissance du fils de la nouvelle
+    --     entréee
+    -- Exception :
+    --     Date_Fils_Incoherente_Exception : La date de naissance du fils est
+    --     antérieure à celle de la nouvelle entréee ou postérieur à sa date
+    --     de décès
+    --     Ordre_Date_Incoherent_Exception : La date de décès est antérieure à la date de
+    --     de naissance
+    --     Date_Naissance_Impossible_Exception : La date de naissance ne correspond pas
+    --     à une date réelle
+    --     Date_Deces_Impossible_Exception : La date de décès ne correspond pas à une date
+    --     réelle
+    --     Clé_Absente_Exception : L'id entrée n'est pas encore présent
+    procedure Modifier (Registre            : in out T_TH;
+                        Id                  : in     Integer;
+                        Informations        : in     T_Informations;
+                        Date_Naissance_Fils : in     T_Date);
+
+
+end Registre;

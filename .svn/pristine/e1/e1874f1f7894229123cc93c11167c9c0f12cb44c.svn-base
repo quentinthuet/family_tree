@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file>/home/ozon/1SN/pim/projets/projet_1/src/partie_2/projet.gpr</vfs_file>
+    <file_marker column=" 5" line=" 158" >
+      <vfs_project>/home/ozon/1SN/pim/projets/projet_1/src/partie_2/projet.gpr</vfs_project>
+      <vfs_file>/home/ozon/1SN/pim/projets/projet_1/src/partie_2/arbre_genealogique.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 49" line=" 163" >
+      <vfs_project>/home/ozon/1SN/pim/projets/projet_1/src/partie_2/projet.gpr</vfs_project>
+      <vfs_file>/home/ozon/1SN/pim/projets/projet_1/src/partie_2/arbre_genealogique.ads</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 19" line=" 68" >
+      <vfs_project>/home/ozon/1SN/pim/projets/projet_1/src/partie_2/projet.gpr</vfs_project>
+      <vfs_file>/home/ozon/1SN/pim/projets/projet_1/src/partie_2/arbre_genealogique.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

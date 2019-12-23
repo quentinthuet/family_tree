@@ -1,0 +1,136 @@
+-- Ce module d√©finit un type Registre T_R et les op√©rations associ√©es.
+
+with Table_De_Hachage;
+with Ada.Text_IO; use Ada.Text_IO;
+
+generic
+    Capacite : Integer;
+package Registre is
+
+   Date_Naissance_Incoherente_Exception : exception;
+   Date_Deces_Incoherente_Exception     : exception;
+   Date_Naissance_Impossible_Exception  : exception;
+   Date_Deces_Impossible_Exception      : exception;
+   Cle_Absente_Exception                : exception;
+   Cle_Presente_Exception               : exception;
+
+   type T_R is private;
+
+   type T_Sexe is (HOMME, FEMME);
+
+   type T_Date is
+      record
+         Jour  : Integer;
+         Mois  : Integer;
+         Annee : Integer;
+         -- Invariant
+         --    Jour entre 1 et 28, 29, 30 ou 31 suivant le mois et l'ann√©e
+         --    Mois entre 1 et 12
+         --    Annee inferieur a l'annee courante
+      end record;
+
+   type T_Informations is
+      record
+         Nom            : String(1..3);
+         Prenom         : String(1..3);
+         Sexe           : T_Sexe;
+         Date_Naissance : T_Date;
+         Lieu_Naissance : String(1..3);
+         Date_Deces     : T_Date;
+      end record;
+
+
+   function F_Hachage (Cle : in Integer) return Integer;
+
+   package M_TH is new Table_De_Hachage (Integer,
+                                         T_Informations,
+                                         Capacite,
+                                         F_Hachage);
+   use M_TH;
+
+    -- Initialiser une TH
+    -- Param√®tres :
+    --     Table : la table √† initialiser
+    procedure Initialiser (Registre : out T_R);
+
+    -- Ajouter une nouvelle entr√©e au registre
+    -- Param√®tres :
+    --     Registre : Le registre auquel ajouter la nouvelle entr√©e
+    --     Id : L'id de la nouvelle entr√©e
+    --     Informations : Les informations de la nouvelle entr√©e
+    --     Date_Naissance_Fils : La date de naissance du fils de la nouvelle
+    --     entrÈe
+    -- Exception :
+    --     Date_Naissance_Incoherente_Exception : La date de naissance du fils est
+    --     antÈrieure ‡ celle de la nouvelle entrÈe ou postÈrieur ‡ sa date
+    --     de dÈcËs
+    --     Date_Deces_Incoherente_Exception : La date de dÈcËs est antÈrieure ‡ la date de
+    --     de naissance
+    --     Date_Naissance_Impossible_Exception : La date de naissance ne correspond pas
+    --     ‡ une date rÈelle
+    --     Date_Deces_Impossible_Exception : La date de dÈcËs ne correspond pas ‡ une date
+    --     rÈelle
+    --     Cle_Presente_Exception : L'id entrÈ est dÈj‡ prÈsent
+    procedure Enregistrer (Registre            : in out T_R;
+                           Id                  : in     Integer;
+                           Informations        : in     T_Informations;
+                           Date_Naissance_Fils : in     T_Date);
+
+    -- Modifier une entr√©e du registre
+    -- Param√®tres :
+    --     Registre : Le registre auquel modifier une entr√©e
+    --     Id : L'id de l'entr√©e √† modifier
+    --     Informations : Les nouvelles informations de l'entr√©e √† modifier
+    --     Date_Naissance_Fils : La date de naissance du fils de la nouvelle
+    --     entrÈe
+    -- Exception :
+    --     Date_Naissance_Incoherente_Exception : La date de naissance du fils est
+    --     antÈrieure ‡ celle de la nouvelle entrÈe ou postÈrieur ‡ sa date
+    --     de dÈcËs
+    --     Date_Deces_Incoherente_Exception : La date de dÈcËs est antÈrieure ‡ la date de
+    --     de naissance
+    --     Date_Naissance_Impossible_Exception : La date de naissance ne correspond pas
+    --     ‡ une date rÈelle
+    --     Date_Deces_Impossible_Exception : La date de dÈcËs ne correspond pas ‡ une date
+    --     rÈelle
+    --     Cle_Absente_Exception : L'id entrÈ n'est pas encore prÈsent
+    procedure Modifier (Registre            : in out T_R;
+                        Id                  : in     Integer;
+                        Informations        : in     T_Informations;
+                        Date_Naissance_Fils : in     T_Date);
+
+       -- Supprimer dans la TH la donn√©e associ√©e √† une cl√©
+    -- Param√®tres :
+    --     Table : la table dans laquelle on veut supprimer la donn√©e
+    --     cle : cl√© associ√©e √† la donn√©e
+    -- Exception : Cle_Absente_Exception si la cl√© n'existe pas
+    procedure Supprimer (Registre : out T_R ; Cle : in Integer);
+
+
+    -- Obtenir la donn√©e associ√©e √† une cl√©
+    -- Param√®tres :
+    --     Table : la table dans laquelle on veut obtenir la donn√©e
+    --     cle : cl√© associ√©e √† la donn√©e
+    -- Exception : Cle_Absente_Exception si la cl√© n'existe pas
+    -- Retourne la donn√©e
+    function Element (Registre : out T_R ; Cle : in Integer) return T_Informations;
+
+
+    -- Obtenir la taille de la TH
+    -- Param√®tres :
+    --     Table : la table dont on veut obtenir la taille
+    -- Retourne la taille
+    function Taille (Registre : out T_R) return Integer;
+
+    -- Vider la TH, toutes les informations enregistr√©es dans la TH sont
+    -- supprim√©es
+    -- Param√®tres :
+    --     Table : la table qu'on veut vider
+    procedure Vider (Registre : out T_R);
+
+private
+
+    type T_R is new T_TH;
+
+
+end Registre;

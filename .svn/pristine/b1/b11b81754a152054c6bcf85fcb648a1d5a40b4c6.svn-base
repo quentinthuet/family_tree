@@ -1,0 +1,231 @@
+-- Implantation du module arbre_binaire
+
+package body Arbre_Binaire is
+    
+
+   procedure Initialiser (Arbre : out T_AB) is
+   begin
+      null;
+   end Initialiser;
+
+
+   procedure Detruire (Arbre : in out T_AB) is
+   begin
+      null;
+   end Detruire;
+
+
+   procedure Ajouter (Valeur : in T_Valeur ;
+                      Noeud : in T_AB ;
+                      Direction : in T_Direction) is
+   begin
+      null;
+   end Ajouter;
+
+
+   procedure Supprimer (Noeud : in out T_AB) is
+   begin
+      null;
+   end Supprimer;
+
+
+   procedure Afficher (Arbre : in T_AB) is
+   begin
+      null;
+   end Afficher;
+
+
+   function Taille (Noeud : in T_AB) return Integer is
+   begin
+      return -1;
+   end;
+
+   function Valeur (Noeud : in T_AB) return T_Valeur is
+      Valeur : T_Valeur;
+   begin
+      return Valeur;
+   end;
+
+   function Taille_Niveau (Noeud : in T_AB ; Niveau : in Integer)
+                           return Integer is
+   begin
+      return -1;
+   end Taille_Niveau;
+    
+   procedure Test (AB1 : in out T_AB; 
+                   Val_Test1 : in T_Valeur;
+                   Val_Test2 : in T_Valeur;
+                   Val_Test3 : in T_Valeur;
+                   Val_Test4 : in T_Valeur;
+                   Val_Test5 : in T_Valeur) is
+
+      procedure Tester_Initialiser_Detruire (AB1 : in out T_AB;
+                                             Val_Test1 : in T_Valeur;
+                                             Val_Test2 : in T_Valeur;
+                                             Val_Test3 : in T_Valeur;
+                                             Val_Test4 : in T_Valeur;
+                                             Val_Test5 : in T_Valeur) is
+      begin
+         Initialiser (AB1);
+         -- pragma Assert (Est_Vide (AB1));
+         pragma Assert (Taille (AB1) = 0);
+         Detruire (AB1);
+      end Tester_Initialiser_Detruire;
+
+      procedure Tester_Ajouter_Supprimer (AB1 : in out T_AB;
+                                          Val_Test1 : in T_Valeur;
+                                          Val_Test2 : in T_Valeur;
+                                          Val_Test3 : in T_Valeur;
+                                          Val_Test4 : in T_Valeur;
+                                          Val_Test5 : in T_Valeur) is
+         Liste_Noeuds : array(1..5) of T_AB;
+         Val_Exception : T_Valeur;
+      begin
+         Initialiser (AB1);
+
+         pragma Assert (Taille (AB1) = 0);
+            
+         Ajouter (Val_Test1, AB1, PREMIER);
+         Liste_Noeuds(1) := AB1;
+
+         pragma Assert (Taille (AB1) = 1);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+
+         Ajouter (Val_Test2, AB1, GAUCHE);
+         Liste_Noeuds(2) := AB1.Sous_Arbre_Gauche;
+
+         pragma Assert (Taille (AB1) = 5);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         pragma Assert (Valeur (Liste_Noeuds(2)) = Val_Test2);
+
+         Ajouter (Val_Test3, AB1, DROITE);
+         Liste_Noeuds(3) := AB1.Sous_Arbre_Droit;
+
+         pragma Assert (Taille (AB1) = 5);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         pragma Assert (Valeur (Liste_Noeuds(2)) = Val_Test2);
+         pragma Assert (Valeur (Liste_Noeuds(3)) = Val_Test3);
+
+         Ajouter (Val_Test4, Liste_Noeuds (2), GAUCHE);
+         Liste_Noeuds(4) := Liste_Noeuds(2).Sous_Arbre_Gauche;
+
+         pragma Assert (Taille (AB1) = 5);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         pragma Assert (Valeur (Liste_Noeuds(2)) = Val_Test2);
+         pragma Assert (Valeur (Liste_Noeuds(3)) = Val_Test3);
+         pragma Assert (Valeur (Liste_Noeuds(4)) = Val_Test4);
+
+         Ajouter (Val_Test5, Liste_Noeuds (2), DROITE);
+         Liste_Noeuds(5) := Liste_Noeuds(2).Sous_Arbre_Droit;
+
+         pragma Assert (Taille (AB1) = 5);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         pragma Assert (Valeur (Liste_Noeuds(2)) = Val_Test2);
+         pragma Assert (Valeur (Liste_Noeuds(3)) = Val_Test3);
+         pragma Assert (Valeur (Liste_Noeuds(4)) = Val_Test4);
+         pragma Assert (Valeur (Liste_Noeuds(5)) = Val_Test5);
+         
+         begin
+            Ajouter (Val_Test5, Liste_Noeuds (2), DROITE);
+            -- On vérifie que l'instruction suivante n'est pas exécutée
+            -- (et donc que l'exception est bien levée)
+            -- Ce processus est répété plusieurs fois dans le code qui suit
+            pragma Assert (False);
+         exception
+            when Noeud_Present_Exception => null;
+         end;
+         
+         Supprimer (Liste_Noeuds (5));
+
+         pragma Assert (Taille (AB1) = 4);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         pragma Assert (Valeur (Liste_Noeuds(2)) = Val_Test2);
+         pragma Assert (Valeur (Liste_Noeuds(3)) = Val_Test3);
+         pragma Assert (Valeur (Liste_Noeuds(4)) = Val_Test4);
+         begin
+            Val_Exception := Valeur (Liste_Noeuds(5));
+            pragma Assert (False);
+         exception
+            when Noeud_Absent_Exception => null;
+         end;   
+         
+         Supprimer (Liste_Noeuds (4));
+
+         pragma Assert (Taille (AB1) = 3);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         pragma Assert (Valeur (Liste_Noeuds(2)) = Val_Test2);
+         pragma Assert (Valeur (Liste_Noeuds(3)) = Val_Test3);
+         pragma Assert (Valeur (Liste_Noeuds(4)) = Val_Test4);
+         for i in 4..5 loop
+            begin
+               Val_Exception := Valeur (Liste_Noeuds(i));
+               pragma Assert (False);
+            exception
+               when Noeud_Absent_Exception => null;
+            end;
+         end loop;
+         
+         Supprimer (Liste_Noeuds (3));
+
+         pragma Assert (Taille (AB1) = 2);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         pragma Assert (Valeur (Liste_Noeuds(2)) = Val_Test2);
+         for i in 3..5 loop
+            begin
+               Val_Exception := Valeur (Liste_Noeuds(i));
+               pragma Assert (False);
+            exception
+               when Noeud_Absent_Exception => null;
+            end;
+         end loop;
+         
+         Supprimer (Liste_Noeuds (2));
+
+         pragma Assert (Taille (AB1) = 1);
+         pragma Assert (Valeur (Liste_Noeuds(1)) = Val_Test1);
+         for i in 2..5 loop
+            begin
+               Val_Exception := Valeur (Liste_Noeuds(i));
+               pragma Assert (False);
+            exception
+               when Noeud_Absent_Exception => null;
+            end;
+         end loop;
+       
+         Supprimer (Liste_Noeuds (1));
+
+         pragma Assert (Taille (AB1) = 0);
+         for i in 1..5 loop
+            begin
+               Val_Exception := Valeur (Liste_Noeuds(i));
+               pragma Assert (False);
+            exception
+               when Noeud_Absent_Exception => null;
+            end;
+         end loop;
+        
+         begin
+            Supprimer (Liste_Noeuds (1));
+            pragma Assert (False);
+         exception
+            when Noeud_Absent_Exception => null;
+         end;
+
+      end Tester_Ajouter_Supprimer;
+      
+   begin
+      Tester_Initialiser_Detruire (AB1, 
+                                   Val_Test1, 
+                                   Val_Test2, 
+                                   Val_Test3,
+                                   Val_Test4, 
+                                   Val_Test5);
+      Tester_Ajouter_Supprimer (AB1, 
+                                Val_Test1, 
+                                Val_Test2, 
+                                Val_Test3,
+                                Val_Test4, 
+                                Val_Test5);
+   end Test;
+
+end Arbre_Binaire;

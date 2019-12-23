@@ -1,0 +1,172 @@
+-- Ce module définit un type arbre généalogique T_AG et les opérations associées.
+
+with Table_De_Hachage;
+with Registre;
+with Arbre_Binaire;
+
+generic
+    Capacite : Integer;
+
+package Arbre_Genealogique is
+
+    Date_Fils_Incoherente_Exception      : exception;
+    Ordre_Date_Incoherent_Exception      : exception;
+    Date_Naissance_Impossible_Exception  : exception;
+    Date_Deces_Impossible_Exception      : exception;
+    Cle_Absente_Exception                : exception;
+    Cle_Presente_Exception               : exception;
+    
+    
+    -- Défini public pour avoir accès à T_Informations dans le programme principal
+    package M_R is new Registre (Capacite);    
+
+    type T_Parent is (PERE, MERE);
+
+    type T_AG is limited private;
+    
+    ID_Absent_Exception : Exception;      -- l'id n'est pas présent dans l'arbre
+    Parent_Present_Exception : Exception; -- le parent à ajouter est déjà présent
+
+    -- Initialiser un arbre généalogique avec une personne
+    -- Paramètres :
+    --     Arbre : l'arbre à initialiser
+    --     Informations : Informations sur la personne
+    procedure Initialiser (Arbre : out T_AG ; Informations : in M_R.T_Informations);
+
+
+    -- Détruire l'arbre
+    -- Paramètres :
+    --     Arbre : l'arbre à détruire
+    procedure Detruire (Arbre : in out T_AG);
+
+
+    -- Ajouter un parent dans un arbre à partir de l'identifiant d'une personne
+    -- Ajoute également un pointeur vers ce noeud dans le registre
+    -- Paramètres :
+    --     Arbre : Arbre dans lequel on veut ajouter un parent
+    --     id : Identifiant de l'enfant
+    --     Parent : Parent à ajouter (PERE ou MERE)
+    --     Informations : Informations à enregistrer dans le registre
+    -- Exception :
+    --     ID_Absent_Exception : l'id n'a pas été trouvé dans l'arbre
+    --     Parent_Present_Exception : le parent à ajouter est déjà présent
+    procedure Ajouter (Arbre : in out T_AG ;
+                       id : in Integer ;
+                       Parent : in T_Parent ;
+                       Informations : in M_R.T_Informations);
+
+
+    -- Modifier les informations sur une personne avec son identifiant
+    -- Paramètres :
+    --     Arbre : Arbre dans lequel on veut effectuer la modification
+    --     id : Identifiant de la personne
+    --     Informations : Informations à enregistrer dans le registre
+    -- Exception :
+    --     ID_Absent_Exception : l'id n'a pas été trouvé dans l'arbre
+    procedure Modifier (Arbre : in out T_AG ;
+                        id : in Integer ;
+                        Informations : in M_R.T_Informations);
+
+
+    -- Supprimer une personne et l'ensemble de ses parents dans l'arbre à
+    -- partir de son identifiant
+    -- Paramètres :
+    --     Arbre :
+    --     id : Identifiant de la personne
+    -- Exception :
+    --     ID_Absent_Exception : l'id n'a pas été trouvé
+    procedure Supprimer (Arbre : in out T_AG ; id : in Integer);
+
+
+
+    -- Afficher l'arbre généalogique
+    -- Paramètres :
+    --     Arbre : L'arbre à afficher
+    procedure Afficher (Arbre : in T_AG);
+
+
+    -- Afficher l'ensemble des parents d'une personne à une génération donné
+    -- Paramètres
+    --     Arbre : L'arbre généalogique
+    --     id : Identifiant de la personne
+    --     gen : génération que l'on veut afficher
+    -- Exception :
+    --     ID_Absent_Exception : l'id n'a pas été trouvé
+    procedure Afficher_Parents_Generation (Arbre : in T_AG ;
+                                           id : in Integer ;
+                                           gen : in Integer);
+
+
+    -- Afficher l'ensemble des personnes qui n'ont qu'un parent dans l'arbre
+    -- Paramètres :
+    --     Arbre : L'arbre généalogique
+    procedure Mono_Parent (Arbre : in T_AG);
+
+
+    -- Afficher l'ensemble des personnes qui ont deux parents dans l'arbre
+    -- Paramètres :
+    --     Arbre : L'arbre généalogique
+    procedure Deux_Parents (Arbre : in T_AG);
+
+
+    -- Afficher l'ensemble des personnes qui n'ont aucun parent dans l'arbre
+    -- Paramètres :
+    --     Arbre : L'arbre généalogique
+    procedure Sans_Parent (Arbre : in T_AG);
+
+
+    -- Afficher n générations à partir de l'identifiant d'un individu
+    -- Paramètres :
+    --     Arbre : L'arbre généalogique
+    --     id : Identifiant de l'individu
+    --     gen : Le nombre de générations que l'on veut afficher
+    -- Exception :
+    --     ID_Absent_Exception : l'id n'a pas été trouvé
+    procedure Afficher_n_Generations (Arbre : in T_AG ; 
+                                      id : in Integer ;
+                                      gen : in Integer);
+
+
+
+    -- Vérifier que deux individus n et m ont un ou plusieurs ancêtres
+    -- homonymes et les afficher
+    -- Paramètres :
+    --     Arbre : L'arbre généalogique dans lequel rechercher
+    --     id_n : Identifiant de l'individu n
+    --     id_m : Identifiant de l'individu m
+    -- Excepton :
+    --     ID_Absent_Exception : l'id n'a pas été trouvé
+    procedure Afficher_Homonymes (Arbre : in T_AG ; 
+                                  id_n : in Integer ;
+                                  id_m : in Integer);
+    
+    
+    -- Obtenir la taille de l'arbre et vérifier que l'arbre binaire, le registre
+    -- et la table de hachage des noeuds ont la même taille
+    -- Paramètre :
+    --     Arbre : Arbre dont on veut connaître la taille
+    -- Retourne la taille de l'arbre
+    function Taille(Arbre : in T_AG) return Integer;
+    
+
+private
+    
+    use M_R;
+
+    package M_AB is new Arbre_Binaire (Integer);
+    use M_AB;
+
+    package M_TH is new Table_De_Hachage (Integer,
+                                          T_AB,
+                                          Capacite,
+                                          F_Hachage);
+    use M_TH;
+
+    
+    type T_AG is record
+        AB : T_AB;
+        Registre : T_R;
+        Noeuds   : T_TH;
+    end record;
+    
+end Arbre_Genealogique;
